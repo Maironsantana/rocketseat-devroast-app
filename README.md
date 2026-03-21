@@ -16,18 +16,3 @@ O foco do DevRoast e pegar algo normalmente tecnico e deixar mais compartilhavel
 ## Contexto do projeto
 
 Este app esta sendo construido durante o evento NLW da Rocketseat, acompanhando as aulas e evoluindo a interface e a experiencia ao longo do evento.
-
-## Status atual
-
-Hoje o projeto ja conta com:
-
-- homepage com editor de codigo
-- componentes visuais reutilizaveis para a interface
-- visual dark inspirado em terminal
-- preview de leaderboard com dados estaticos
-
-## Proximos passos naturais
-
-- conectar o envio do codigo com a analise real
-- exibir a resposta do roast em uma tela dedicada
-- expandir a leaderboard com mais contexto e navegacao
