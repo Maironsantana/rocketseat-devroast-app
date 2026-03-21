@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@theme {
+  --color-accent-amber: #f59e0b;
+  --color-accent-green: #10b981;
+  --color-accent-green-hover: #34d399;
+  --color-accent-red: #ef4444;
+  --color-app-background: #f5f5f4;
+  --color-app-foreground: #0a0a0a;
+  --color-border-subtle: #2a2a2a;
+  --color-canvas-base: #0a0a0a;
+  --color-foreground-disabled: #8b8b8b;
+  --color-foreground-inverse: #fafafa;
+  --color-foreground-muted: #4b5563;
+  --color-foreground-secondary: #6b7280;
+  --color-foreground-soft: #a0a0a0;
+  --color-surface-diff-added: #0a1a0f;
+  --color-surface-diff-removed: #1a0a0a;
+  --color-surface-panel: #111111;
+  --color-surface-subtle: #0f0f0f;
+  --font-mono:
+    var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+body {
+  background: var(--color-app-background);
+  color: var(--color-app-foreground);
+}
+
+.code-block-wrapper .shiki {
+  margin: 0;
+  overflow-x: auto;
+  padding: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.code-block-wrapper .shiki code {
+  display: grid;
+}
+
+.code-block-wrapper .shiki .line {
+  display: inline-block;
+  min-height: 1.5rem;
+  width: 100%;
+}
+
+.code-block-with-lines .shiki code {
+  counter-reset: line;
+}
+
+.code-block-with-lines .shiki .line {
+  counter-increment: line;
+  padding-left: 3.5rem;
+  position: relative;
+}
+
+.code-block-with-lines .shiki .line::before {
+  color: var(--color-foreground-muted);
+  content: counter(line);
+  left: 0.75rem;
+  position: absolute;
+  text-align: right;
+  width: 1.75rem;
+}
