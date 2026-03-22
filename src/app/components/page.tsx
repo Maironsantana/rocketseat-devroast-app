@@ -1,7 +1,6 @@
 import {
   Badge,
   Button,
-  CodeBlock,
   DiffLine,
   PanelContent,
   PanelDescription,
@@ -24,6 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui";
+import { CodeBlock } from "@/components/ui/code-block";
 
 const buttonVariants = ["primary", "secondary", "link"] as const;
 

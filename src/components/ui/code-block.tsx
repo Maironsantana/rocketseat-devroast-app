@@ -1,4 +1,8 @@
-import { type BundledLanguage, codeToHtml } from "shiki";
+import {
+  type BundledLanguage,
+  bundledLanguages,
+  createHighlighter,
+} from "shiki";
 import { twMerge } from "tailwind-merge";
 
 import {
@@ -19,6 +23,13 @@ export type CodeBlockProps = {
   variant?: "default" | "inline";
 };
 
+const codeBlockTheme = "vesper" as const;
+
+const codeBlockHighlighterPromise = createHighlighter({
+  langs: Object.keys(bundledLanguages) as BundledLanguage[],
+  themes: [codeBlockTheme],
+});
+
 export async function CodeBlock({
   chrome = true,
   className,
@@ -28,9 +39,12 @@ export async function CodeBlock({
   showLineNumbers = true,
   variant = "default",
 }: CodeBlockProps) {
-  const html = await codeToHtml(code, {
+  "use cache";
+
+  const highlighter = await codeBlockHighlighterPromise;
+  const html = highlighter.codeToHtml(code, {
     lang,
-    theme: "vesper",
+    theme: codeBlockTheme,
   });
 
   const content = (

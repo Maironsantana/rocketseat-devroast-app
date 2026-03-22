@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import type { BundledLanguage } from "shiki";
 
 import {
   Badge,
   buttonVariants,
-  CodeBlock,
   DiffLine,
   PanelContent,
   PanelHeader,
@@ -14,6 +14,7 @@ import {
   ScoreRingValue,
   ScoreRingVisual,
 } from "@/components/ui";
+import { CodeBlock } from "@/components/ui/code-block";
 
 type PageProps = {
   params: Promise<{
@@ -135,9 +136,11 @@ function AnalysisCard({ issue }: { issue: AnalysisIssue }) {
   );
 }
 
-export default async function ResultPage({ params }: PageProps) {
-  const { submissionId } = await params;
+function ResultPageSkeleton() {
+  return <main className="px-6 py-10 md:px-10 md:py-10" />;
+}
 
+function ResultPageContent({ submissionId }: { submissionId: string }) {
   return (
     <main className="px-6 py-10 md:px-10 md:py-10">
       <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-10 lg:px-10">
@@ -231,5 +234,15 @@ export default async function ResultPage({ params }: PageProps) {
         </section>
       </div>
     </main>
+  );
+}
+
+export default function ResultPage({ params }: PageProps) {
+  return (
+    <Suspense fallback={<ResultPageSkeleton />}>
+      {params.then(({ submissionId }) => (
+        <ResultPageContent submissionId={submissionId} />
+      ))}
+    </Suspense>
   );
 }

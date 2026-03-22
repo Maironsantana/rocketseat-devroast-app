@@ -1,39 +1,20 @@
 import Link from "next/link";
-import type { BundledLanguage } from "shiki";
-
 import {
   buttonVariants,
-  CodeBlock,
+  CollapsibleCodePreview,
   Table,
   TableBody,
   TableCell,
   TableHeader,
   TableRow,
 } from "@/components/ui";
+import { CodeBlock } from "@/components/ui/code-block";
+import { getCodeBlockLanguage } from "@/lib/code-editor/get-code-block-language";
 import type { HomepageLeaderboardPreview } from "@/server/api/services/leaderboard-service";
-
-import { HomepageLeaderboardCodePreview } from "./homepage-leaderboard-code-preview";
 
 const PREVIEW_LINE_COUNT = 6;
 
-function getCodeBlockLanguage(language: string): BundledLanguage {
-  switch (language) {
-    case "javascript":
-    case "typescript":
-    case "sql":
-    case "python":
-    case "java":
-    case "csharp":
-    case "go":
-    case "rust":
-    case "php":
-      return language;
-    default:
-      return "text" as BundledLanguage;
-  }
-}
-
-async function LeaderboardCodeCell({
+function LeaderboardCodeCell({
   language,
   sourceCode,
 }: {
@@ -48,7 +29,7 @@ async function LeaderboardCodeCell({
   const codeLanguage = getCodeBlockLanguage(language);
 
   return (
-    <HomepageLeaderboardCodePreview
+    <CollapsibleCodePreview
       isExpandable={isExpandable}
       preview={
         <CodeBlock
@@ -67,7 +48,7 @@ async function LeaderboardCodeCell({
         showLineNumbers={false}
         variant="inline"
       />
-    </HomepageLeaderboardCodePreview>
+    </CollapsibleCodePreview>
   );
 }
 
@@ -75,9 +56,7 @@ type HomepageLeaderboardProps = {
   preview: HomepageLeaderboardPreview;
 };
 
-export async function HomepageLeaderboard({
-  preview,
-}: HomepageLeaderboardProps) {
+export function HomepageLeaderboard({ preview }: HomepageLeaderboardProps) {
   return (
     <section className="space-y-6" id="leaderboard-preview">
       <div className="flex items-center justify-between gap-4">

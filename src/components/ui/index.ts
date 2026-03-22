@@ -1,6 +1,5 @@
 export { Badge, type BadgeProps, badgeVariants } from "./badge";
 export { Button, type ButtonProps, buttonVariants } from "./button";
-export { CodeBlock, type CodeBlockProps } from "./code-block";
 export { CodeEditor, type CodeEditorProps } from "./code-editor";
 export {
   CodeEditorInput,
@@ -16,6 +15,10 @@ export {
   codeLanguageSelectPopupVariants,
   codeLanguageSelectTriggerVariants,
 } from "./code-language-select";
+export {
+  CollapsibleCodePreview,
+  type CollapsibleCodePreviewProps,
+} from "./collapsible-code-preview";
 export {
   DetectedLanguageBadge,
   type DetectedLanguageBadgeProps,

@@ -4,9 +4,9 @@ import { Collapsible } from "@base-ui/react/collapsible";
 import * as React from "react";
 import { twMerge } from "tailwind-merge";
 
-import { buttonVariants } from "@/components/ui";
+import { buttonVariants } from "./button";
 
-type HomepageLeaderboardCodePreviewProps = {
+export type CollapsibleCodePreviewProps = {
   children: React.ReactNode;
   isExpandable: boolean;
   preview: React.ReactNode;
@@ -26,11 +26,11 @@ function ChevronIcon({ className, ...props }: React.ComponentProps<"svg">) {
   );
 }
 
-export function HomepageLeaderboardCodePreview({
+export function CollapsibleCodePreview({
   children,
   isExpandable,
   preview,
-}: HomepageLeaderboardCodePreviewProps) {
+}: CollapsibleCodePreviewProps) {
   const [open, setOpen] = React.useState(false);
 
   if (!isExpandable) {
