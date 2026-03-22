@@ -11,6 +11,7 @@ Implementar o funcionamento real da tela `src/app/leaderboard/page.tsx` com dado
 - a tela `src/app/leaderboard/page.tsx` ainda usa dados mockados para stats e entradas
 - o comportamento de codigo colapsavel com syntax highlight ja existe em `src/app/_components/homepage-leaderboard.tsx` e `src/app/_components/homepage-leaderboard-code-preview.tsx`
 - a pagina dedicada precisa continuar alinhada ao App Router server-first e ao uso de `CodeBlock` server-side
+- o usuario pediu para evitar chamadas frequentes ao backend nesta tela usando os cache components do Next.js, com `cacheComponents` habilitado, diretiva `'use cache'` e revalidacao configurada no servidor
 
 ## O que precisa entregar
 
@@ -21,6 +22,7 @@ Implementar o funcionamento real da tela `src/app/leaderboard/page.tsx` com dado
 - codigo com syntax highlight e preview colapsavel
 - roast sempre visivel abaixo do codigo em cada item
 - estado vazio coerente quando nao houver entradas elegiveis
+- uso de cache components do Next.js para revalidar o resultado da pagina sem refetch em toda request
 
 ## Recomendacao final
 
@@ -31,6 +33,7 @@ Expandir o dominio atual de leaderboard sem generalizar cedo demais:
 - concentrar regras de elegibilidade, ordenacao e mapeamento no service
 - deixar `src/app/leaderboard/page.tsx` como wrapper server com prefetch, `HydrationBoundary` e `Suspense`
 - mover a UI principal para componentes dedicados da leaderboard page, mantendo a renderizacao do `CodeBlock` no servidor e isolando no cliente apenas o estado interativo do colapsavel
+- habilitar `cacheComponents` no `next.config.ts` e aplicar `'use cache'` com revalidacao de 5 minutos no boundary server que carrega a leaderboard page
 
 Essa abordagem preserva o padrao recente do projeto, evita acoplamento indevido entre homepage e pagina dedicada, e permite evoluir a tela completa sem inflar o contrato do preview.
 
@@ -82,8 +85,14 @@ O total e a media devem ser calculados sobre todo o conjunto elegivel antes da a
 - fazer prefetch da nova query com `trpc.leaderboard.page.queryOptions()`
 - entregar o estado com `dehydrate(queryClient)` e `HydrationBoundary`
 - usar `Suspense` com fallback especifico para a tela, preservando a estrutura visual durante o carregamento
-- manter a route em server component e remover `export const dynamic = "force-static"`, permitindo que a pagina siga o fluxo dinamico atual do `tRPC` no App Router
-- a query prefetched deve ser lida no servidor para montar a lista principal e alimentar componentes server-first; a hidratacao permanece disponivel para pequenos pontos clientes quando necessario, mas a lista nao deve depender de `useSuspenseQuery` para renderizar o `CodeBlock`
+- manter a route em server component e remover `export const dynamic = "force-static"`
+- a pagina deve usar um nested async server section: esse section chama um helper cacheado, recebe os dados resolvidos, renderiza a lista no servidor e envolve a saida com `HydrationBoundary`
+- o helper cacheado deve ser o boundary principal de dados da pagina: ele executa `queryClient.fetchQuery(trpc.leaderboard.page.queryOptions())`, monta o estado desidratado e retorna ambos para o section server
+- a hidratacao permanece disponivel para pequenos pontos clientes quando necessario, mas a lista nao deve depender de `useSuspenseQuery` para renderizar o `CodeBlock`
+- habilitar `cacheComponents: true` no `next.config.ts`
+- aplicar a diretiva `'use cache'` no helper ou section server responsavel por carregar os dados da leaderboard page
+- configurar a revalidacao desse helper com `cacheLife({ stale: 300 })`, equivalente a 5 minutos de stale time, usando a API de cache do Next.js suportada pela versao atual do projeto
+- o cache deve ficar no boundary server da pagina, nao no componente cliente do colapsavel nem na camada `tRPC` do browser
 
 ### Composicao da interface
 
@@ -146,6 +155,7 @@ Cada card deve mostrar:
 - o topo da pagina mostra total real de entradas elegiveis e media real de score
 - entries sem roast ou sem score nao aparecem
 - a pagina continua seguindo o fluxo server-first com `tRPC`, `HydrationBoundary` e `Suspense`
+- a pagina usa cache components do Next.js com `'use cache'` e revalidacao de 5 minutos para evitar chamadas ao backend em toda request
 - quando nao houver dados elegiveis, a tela exibe estado vazio consistente
 
 ## Riscos
@@ -153,6 +163,7 @@ Cada card deve mostrar:
 - se a regra de elegibilidade divergir entre query principal e agregados, os stats do topo podem nao bater com a lista
 - duplicar a logica de normalizacao de linguagem entre homepage e pagina dedicada pode gerar inconsistencias visuais
 - mover markup demais para client component pode enfraquecer o padrao server-first consolidado no projeto
+- habilitar `cacheComponents` muda o comportamento global de cache do App Router, entao a implementacao precisa ficar restrita ao fluxo aprovado e ser validada em build
 
 ## To-dos de implementacao
 
@@ -160,6 +171,7 @@ Cada card deve mostrar:
 - [ ] expandir o service com leitura de 20 entradas e stats agregadas
 - [ ] extrair ou compartilhar a normalizacao de linguagem para `CodeBlock`
 - [ ] criar wrapper server e fallback da leaderboard page
+- [ ] habilitar cache components no Next.js e aplicar `'use cache'` com revalidacao de 5 minutos no carregamento server da pagina
 - [ ] manter a lista em componente server-first e limitar o cliente ao wrapper de collapse
 - [ ] remover mocks da route atual
 - [ ] validar lint e build
