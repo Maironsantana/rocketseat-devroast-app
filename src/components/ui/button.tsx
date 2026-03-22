@@ -3,18 +3,17 @@ import { tv, type VariantProps } from "tailwind-variants";
 
 export const buttonVariants = tv({
   base: [
-    "font-mono inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-none border border-transparent",
+    "font-mono inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-none border border-transparent",
     "text-[13px] font-medium transition-colors duration-200",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-green focus-visible:ring-offset-2 focus-visible:ring-offset-canvas-base",
     "disabled:pointer-events-none disabled:opacity-50",
   ],
   variants: {
     variant: {
-      primary:
-        "bg-accent-green text-canvas-base enabled:hover:bg-accent-green-hover",
+      primary: "bg-accent-green text-canvas-base hover:bg-accent-green-hover",
       secondary:
-        "border-border-subtle bg-transparent text-foreground-inverse enabled:hover:border-foreground-muted enabled:hover:bg-surface-subtle enabled:hover:text-foreground-inverse",
-      link: "border-border-subtle bg-transparent text-foreground-secondary enabled:hover:text-foreground-inverse",
+        "border-border-subtle bg-transparent text-foreground-inverse hover:border-foreground-muted hover:bg-surface-subtle hover:text-foreground-inverse",
+      link: "border-border-subtle bg-transparent text-foreground-secondary hover:border-foreground-muted hover:bg-surface-subtle hover:text-foreground-inverse",
     },
     size: {
       sm: "px-3 py-1.5 text-xs",

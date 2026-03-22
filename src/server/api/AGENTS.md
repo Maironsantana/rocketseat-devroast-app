@@ -6,3 +6,4 @@
 - Use `publicProcedure` by default until auth exists.
 - Keep routers organized by domain and compose them in `root.ts`.
 - Use Drizzle through the shared context instead of creating ad-hoc database clients.
+- When a service needs multiple independent database reads, prefer `await Promise.all(...)` so the queries run in parallel.

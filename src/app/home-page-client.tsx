@@ -1,12 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import * as React from "react";
 
 import {
   Badge,
   Button,
-  buttonVariants,
   CodeEditor,
   CodeLanguageSelect,
   DetectedLanguageBadge,
@@ -15,11 +13,6 @@ import {
   SwitchField,
   SwitchLabel,
   SwitchRoot,
-  Table,
-  TableBody,
-  TableCell,
-  TableHeader,
-  TableRow,
 } from "@/components/ui";
 import {
   CODE_EDITOR_DETECT_DEBOUNCE_MS,
@@ -51,40 +44,15 @@ const sampleCode = [
   "}",
 ].join("\n");
 
-const leaderboardRows = [
-  {
-    code: [
-      'eval(prompt("enter code"))',
-      "document.write(response)",
-      "// trust the user lol",
-    ],
-    lang: "javascript",
-    rank: "1",
-    score: "1.2",
-  },
-  {
-    code: [
-      "if (x == true) { return true; }",
-      "else if (x == false) { return false; }",
-      "else { return !false; }",
-    ],
-    lang: "typescript",
-    rank: "2",
-    score: "1.8",
-  },
-  {
-    code: ["SELECT * FROM users WHERE 1=1", "-- TODO: add authentication"],
-    lang: "sql",
-    rank: "3",
-    score: "2.1",
-  },
-];
-
 type HomePageClientProps = {
+  leaderboardSlot: React.ReactNode;
   metricsSlot: React.ReactNode;
 };
 
-export function HomePageClient({ metricsSlot }: HomePageClientProps) {
+export function HomePageClient({
+  leaderboardSlot,
+  metricsSlot,
+}: HomePageClientProps) {
   const [code, setCode] = React.useState(sampleCode);
   const [manualLanguage, setManualLanguage] =
     React.useState<CodeLanguageId | null>(null);
@@ -200,79 +168,7 @@ export function HomePageClient({ metricsSlot }: HomePageClientProps) {
 
         <div className="h-7" />
 
-        <section className="space-y-6" id="leaderboard-preview">
-          <div className="flex items-center justify-between gap-4">
-            <div className="space-y-2">
-              <div className="font-mono flex items-center gap-2 text-sm font-bold tracking-tight">
-                <span className="text-accent-green">{"//"}</span>
-                <span className="text-foreground-inverse">
-                  shame_leaderboard
-                </span>
-              </div>
-              <p className="text-sm text-foreground-muted">
-                {"// the worst code on the internet, ranked by shame"}
-              </p>
-            </div>
-
-            <Link
-              className={buttonVariants({ size: "sm", variant: "link" })}
-              href="/leaderboard"
-            >
-              $ view_full_leaderboard &gt;&gt;
-            </Link>
-          </div>
-
-          <Table>
-            <TableHeader>
-              <TableRow variant="header">
-                <TableCell as="th" tone="muted">
-                  #
-                </TableCell>
-                <TableCell as="th" tone="muted">
-                  score
-                </TableCell>
-                <TableCell as="th" tone="muted">
-                  code
-                </TableCell>
-                <TableCell as="th" tone="muted">
-                  lang
-                </TableCell>
-              </TableRow>
-            </TableHeader>
-
-            <TableBody>
-              {leaderboardRows.map((row) => (
-                <TableRow key={row.rank}>
-                  <TableCell tone="muted">{row.rank}</TableCell>
-                  <TableCell tone="score">{row.score}</TableCell>
-                  <TableCell>
-                    <div className="flex flex-col gap-1">
-                      {row.code.map((line, index) => (
-                        <span
-                          className={
-                            index === row.code.length - 1
-                              ? "text-foreground-disabled"
-                              : "text-foreground-inverse"
-                          }
-                          key={`${row.rank}-${line}`}
-                        >
-                          {line}
-                        </span>
-                      ))}
-                    </div>
-                  </TableCell>
-                  <TableCell tone="muted">{row.lang}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-
-          <div className="flex justify-center py-2">
-            <p className="text-center text-xs text-foreground-muted">
-              showing top 3 of 2,847 - view full leaderboard &gt;&gt;
-            </p>
-          </div>
-        </section>
+        {leaderboardSlot}
       </div>
     </main>
   );
