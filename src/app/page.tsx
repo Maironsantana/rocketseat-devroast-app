@@ -2,11 +2,13 @@
 
 import Link from "next/link";
 import * as React from "react";
-
 import {
+  Badge,
   Button,
   buttonVariants,
-  CodeEditorInput,
+  CodeEditor,
+  CodeLanguageSelect,
+  DetectedLanguageBadge,
   SwitchControl,
   SwitchDescription,
   SwitchField,
@@ -18,6 +20,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui";
+import {
+  CODE_EDITOR_DETECT_DEBOUNCE_MS,
+  CODE_EDITOR_MAX_CHARACTERS,
+} from "@/lib/code-editor/constants";
+import { detectCodeLanguage } from "@/lib/code-editor/detect-language";
+import {
+  type CodeLanguageId,
+  codeLanguageLabels,
+  codeLanguageOptionsById,
+} from "@/lib/code-editor/languages";
 
 const sampleCode = [
   "function calculateTotal(items) {",
@@ -69,6 +81,51 @@ const leaderboardRows = [
 
 export default function Home() {
   const [code, setCode] = React.useState(sampleCode);
+  const [manualLanguage, setManualLanguage] =
+    React.useState<CodeLanguageId | null>(null);
+  const [detectedLanguage, setDetectedLanguage] =
+    React.useState<CodeLanguageId>("plaintext");
+  const [isDetectingLanguage, setIsDetectingLanguage] = React.useState(false);
+  const [isHighlighting, setIsHighlighting] = React.useState(false);
+  const hasExceededLimit = code.length > CODE_EDITOR_MAX_CHARACTERS;
+
+  React.useEffect(() => {
+    if (hasExceededLimit || code.trim().length === 0) {
+      setDetectedLanguage("plaintext");
+      setIsDetectingLanguage(false);
+      return;
+    }
+
+    if (manualLanguage) {
+      setIsDetectingLanguage(false);
+      return;
+    }
+
+    setIsDetectingLanguage(true);
+
+    const timeout = window.setTimeout(() => {
+      setDetectedLanguage(detectCodeLanguage(code));
+      setIsDetectingLanguage(false);
+    }, CODE_EDITOR_DETECT_DEBOUNCE_MS);
+
+    return () => {
+      window.clearTimeout(timeout);
+    };
+  }, [code, hasExceededLimit, manualLanguage]);
+
+  const resolvedLanguage = hasExceededLimit
+    ? "plaintext"
+    : (manualLanguage ?? detectedLanguage);
+  const fileName = React.useMemo(() => {
+    const extension = codeLanguageOptionsById[resolvedLanguage].fileExtension;
+
+    return extension === "Dockerfile" ? extension : `pasted.${extension}`;
+  }, [resolvedLanguage]);
+  const showDetectedBadge = manualLanguage === null;
+  const detectedBadgeLabel =
+    isDetectingLanguage || isHighlighting
+      ? "detecting..."
+      : codeLanguageLabels[resolvedLanguage];
 
   return (
     <main className="px-6 py-12 md:px-10 md:py-20">
@@ -86,13 +143,39 @@ export default function Home() {
           </p>
         </section>
 
-        <CodeEditorInput
-          fileName="calculate.js"
-          minRows={16}
-          onChange={(event) => setCode(event.target.value)}
-          placeholder="// paste your code here"
-          value={code}
-        />
+        <section className="space-y-4">
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div className="flex flex-wrap items-end gap-3">
+              <CodeLanguageSelect
+                onValueChange={setManualLanguage}
+                value={manualLanguage}
+              />
+
+              {showDetectedBadge ? (
+                <DetectedLanguageBadge
+                  isDetecting={isDetectingLanguage || isHighlighting}
+                  label={detectedBadgeLabel}
+                />
+              ) : null}
+
+              {hasExceededLimit ? (
+                <Badge variant="critical">
+                  {`limit exceeded - ${CODE_EDITOR_MAX_CHARACTERS} chars max`}
+                </Badge>
+              ) : null}
+            </div>
+          </div>
+
+          <CodeEditor
+            fileName={fileName}
+            language={resolvedLanguage}
+            minRows={16}
+            onHighlightingChange={setIsHighlighting}
+            onValueChange={setCode}
+            placeholder="// paste your code here"
+            value={code}
+          />
+        </section>
 
         <section className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
           <SwitchRoot defaultChecked>

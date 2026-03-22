@@ -64,3 +64,39 @@ body {
   text-align: right;
   width: 1.75rem;
 }
+
+.code-editor-highlight .shiki,
+.code-editor-highlight .shiki-editor-plain {
+  margin: 0;
+  min-height: 100%;
+  overflow: visible;
+  padding: 1rem;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 20px;
+  font-variant-ligatures: none;
+  tab-size: 2;
+  white-space: pre;
+}
+
+.code-editor-highlight .shiki code,
+.code-editor-highlight .shiki-editor-plain code {
+  display: grid;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.code-editor-highlight .shiki .line,
+.code-editor-highlight .shiki-editor-plain .line {
+  display: inline-block;
+  min-height: 20px;
+  width: 100%;
+}
+
+.code-editor-highlight .shiki span,
+.code-editor-highlight .shiki-editor-plain span {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}

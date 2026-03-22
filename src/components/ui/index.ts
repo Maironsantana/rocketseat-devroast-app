@@ -1,10 +1,25 @@
 export { Badge, type BadgeProps, badgeVariants } from "./badge";
 export { Button, type ButtonProps, buttonVariants } from "./button";
 export { CodeBlock, type CodeBlockProps } from "./code-block";
+export { CodeEditor, type CodeEditorProps } from "./code-editor";
 export {
   CodeEditorInput,
   type CodeEditorInputProps,
 } from "./code-editor-input";
+export {
+  CodeLanguageSelect,
+  type CodeLanguageSelectProps,
+  codeLanguageSelectIconVariants,
+  codeLanguageSelectItemVariants,
+  codeLanguageSelectLabelVariants,
+  codeLanguageSelectListVariants,
+  codeLanguageSelectPopupVariants,
+  codeLanguageSelectTriggerVariants,
+} from "./code-language-select";
+export {
+  DetectedLanguageBadge,
+  type DetectedLanguageBadgeProps,
+} from "./detected-language-badge";
 export { DiffLine, type DiffLineProps, diffLineVariants } from "./diff-line";
 export {
   PanelChrome,
