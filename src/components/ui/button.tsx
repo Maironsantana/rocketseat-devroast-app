@@ -13,7 +13,7 @@ export const buttonVariants = tv({
       primary:
         "bg-accent-green text-canvas-base enabled:hover:bg-accent-green-hover",
       secondary:
-        "border-border-subtle bg-transparent text-foreground-inverse enabled:hover:bg-canvas-base enabled:hover:text-foreground-inverse",
+        "border-border-subtle bg-transparent text-foreground-inverse enabled:hover:border-foreground-muted enabled:hover:bg-surface-subtle enabled:hover:text-foreground-inverse",
       link: "border-border-subtle bg-transparent text-foreground-secondary enabled:hover:text-foreground-inverse",
     },
     size: {
