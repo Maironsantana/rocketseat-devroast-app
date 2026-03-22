@@ -1,10 +1,8 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 
-const databaseUrl = process.env.DATABASE_URL;
-
-if (!databaseUrl) {
-  throw new Error("DATABASE_URL is not set");
-}
+const databaseUrl =
+  process.env.DATABASE_URL ??
+  "postgresql://devroast:devroast@localhost:5432/devroast";
 
 export const db = drizzle({
   connection: databaseUrl,
